@@ -1,0 +1,68 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Performance Management</title>
+    <link rel="stylesheet" href="StyleSheet.css">
+</head>
+<body>
+
+    <h1>Employee Performance Management</h1>
+
+    <!-- Employee Management Section -->
+    <section>
+        <h2>Employee Management</h2>
+        <form id="employeeForm">
+            <input type="text" id="fullName" placeholder="Full Name" required>
+            <input type="email" id="email" placeholder="Email" required>
+            <input type="date" id="dateOfBirth" required>
+            <input type="text" id="department" placeholder="Department" required>
+            <input type="number" id="currentSalary" placeholder="Salary" required>
+            <button type="submit">Add Employee</button>
+        </form>
+
+        <h3>Employees List</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>EmployeeId</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Department</th>
+                    <th>Salary</th>
+                    <th>IsActive</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="employeeTable"></tbody>
+        </table>
+    </section>
+
+    <!-- Performance Review Section -->
+    <section>
+        <h2>Performance Reviews</h2>
+        <form id="reviewForm">
+            <input type="number" id="employeeId" placeholder="Employee ID" required>
+            <input type="number" id="perfomanceScore" placeholder="Score (1-10)" min="1" max="10" required>
+            <input type="text" id="comments" placeholder="Comments">
+            <button type="submit">Add Review</button>
+        </form>
+
+        <h3>Reviews List</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Employee ID</th>
+                    <th>Score</th>
+                    <th>Comments</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="reviewTable"></tbody>
+        </table>
+    </section>
+
+    <script src="JavaScript.js"></script>
+</body>
+</html>
