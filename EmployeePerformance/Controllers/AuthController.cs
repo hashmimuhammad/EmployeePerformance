@@ -25,6 +25,9 @@ public class AuthController : ControllerBase
             var roles = await _userManager.GetRolesAsync(user);
             var token = _tokenService.GenerateJwtToken(user, roles);
             return Ok(new { token });
+
+
+
         }
         else
         {
