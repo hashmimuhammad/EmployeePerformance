@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 
 [Route("api/[controller]")]
@@ -33,16 +34,38 @@ public class EmployeesController : ControllerBase
         return Ok(employees);
     }
 
-    [HttpGet("{id}")]
-    [Authorize(policy: "AdminOrEmployee")]
-    public async Task<IActionResult> GetEmployeeById(int id)
+    //[HttpGet("{email}")]
+    //[Authorize(policy: "AdminOrEmployee")]
+    //public async Task<IActionResult> GetEmployeeByEmail(string email)
+    //{
+    //    var employee = await _empRepo.GetEmployeeByEmailAsync(email);
+    //    if (employee == null)
+    //        return NotFound(new { message = "Employee not found" });
+
+    //    return Ok(employee);
+    //}
+
+
+    [HttpGet("{email}")]
+    [Authorize(Roles = "Employee,Admin")]
+    public async Task<IActionResult> GetEmployeeByEmail(string email)
     {
-        var employee = await _empRepo.GetEmployeeByIdAsync(id);
+        
+        var loggedInUserEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+
+        
+        if (User.IsInRole("Employee") && loggedInUserEmail != email)
+        {
+            return Forbid(); 
+        }
+
+        var employee = await _empRepo.GetEmployeeByEmailAsync(email);
         if (employee == null)
             return NotFound(new { message = "Employee not found" });
 
         return Ok(employee);
     }
+
 
     [HttpPost]
     [Route("register")]
@@ -82,7 +105,7 @@ public class EmployeesController : ControllerBase
 
         var newEmployee = await _empRepo.AddEmployeeAsync(employeeDto);
 
-        return CreatedAtAction(nameof(GetEmployeeById), new { id = newEmployee.EmployeeId }, newEmployee);
+        return CreatedAtAction(nameof(GetEmployeeByEmail), new { id = newEmployee.EmployeeId }, newEmployee);
     }
 
     [HttpPut("{id}")]
