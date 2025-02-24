@@ -1,4 +1,5 @@
 ﻿using EmployeePerformance.Dtos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 [Route("api/[controller]")]
@@ -13,6 +14,7 @@ public class PerformanceReviewsController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize(policy: "Admin")]
     public async Task<IActionResult> GetAllReviews()
     {
         var reviews = await _pReviewRepo.GetAllReviewsAsync();
@@ -20,14 +22,15 @@ public class PerformanceReviewsController : ControllerBase
     }
 
     [HttpGet("employee/{employeeId}")]
+    [Authorize(policy: "AdminOrEmployee")]
     public async Task<IActionResult> GetReviewsByEmployeeId(int employeeId)
     {
         var reviews = await _pReviewRepo.GetReviewsByEmployeeIdAsync(employeeId);
         return Ok(reviews);
     }
 
-    
     [HttpPost]
+    [Authorize(policy: "Admin")]
     public async Task<IActionResult> AddPerformanceReview([FromBody] CreatePerformanceReviewDto reviewDto)
     {
         if (reviewDto == null)
@@ -43,9 +46,9 @@ public class PerformanceReviewsController : ControllerBase
             return BadRequest(new { message = ex.Message });
         }
     }
-
-    
+ 
     [HttpPut("{id}")]
+    [Authorize(policy: "Admin")]
     public async Task<IActionResult> UpdatePerformanceReview(int id, [FromBody] UpdatePerformanceReviewDto reviewDto)
     {
         if (reviewDto == null)
@@ -58,8 +61,8 @@ public class PerformanceReviewsController : ControllerBase
         return Ok(updatedReview);
     }
 
-  
     [HttpDelete("{id}")]
+    [Authorize(policy: "Admin")]
     public async Task<IActionResult> DeletePerformanceReview(int id)
     {
         var result = await _pReviewRepo.DeleteReviewAsync(id);

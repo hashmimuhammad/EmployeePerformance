@@ -6,13 +6,11 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 
 
-
 [Route("api/[controller]")]
 [ApiController]
 public class EmployeesController : ControllerBase
 {
-    
-
+   
     private readonly IEmployeeRepository _empRepo;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
@@ -27,8 +25,7 @@ public class EmployeesController : ControllerBase
         _roleManager = roleManager;
     }
 
-
-    [HttpGet]
+    [HttpGet("all")]
     [Authorize(policy: "Admin")]
     public async Task<IActionResult> GetAllEmployees()
     {
@@ -103,6 +100,7 @@ public class EmployeesController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+
      [Authorize(policy: "Admin")]
     public async Task<IActionResult> DeleteEmployee(int id)
     {
