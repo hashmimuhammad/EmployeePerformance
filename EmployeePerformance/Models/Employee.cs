@@ -14,6 +14,11 @@ namespace EmployeePerformance.Models
         public string Email { get; set; }
         public DateTime DateOfBirth { get; set; }
         public string Department { get; set; }
+        [Required]
+        public string PasswordHash { get; set; } 
+
+        [Required]
+        public string Role { get; set; }
         public DateTime JoiningDate { get; set; } = DateTime.Now;
         [Required]
         [Column(TypeName = "decimal(18,2)")]

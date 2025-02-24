@@ -28,6 +28,23 @@
 //}
 
 
+// Search Function
+function filterEmployees() {
+    const searchTerm = document.getElementById("searchInput").value.toLowerCase();
+    const rows = document.querySelectorAll("#employeeTable tr");
+
+    rows.forEach(row => {
+        const name = row.cells[1].textContent.toLowerCase();
+        const email = row.cells[2].textContent.toLowerCase();
+        const department = row.cells[3].textContent.toLowerCase();
+
+        if (name.includes(searchTerm) || email.includes(searchTerm) || department.includes(searchTerm)) {
+            row.style.display = "";
+        } else {
+            row.style.display = "none";
+        }
+    });
+}
 
 async function loadEmployees() {
     const response = await fetch(`${apiBaseUrl}/employees`);
@@ -60,13 +77,6 @@ async function loadEmployees() {
         tableBody.innerHTML += row;
     });
 }
-
-
-
-
-
-
-
 // Add Employee
 //document.getElementById("employeeForm").addEventListener("submit", async (e) => {
 //    e.preventDefault();

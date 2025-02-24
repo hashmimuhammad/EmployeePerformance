@@ -1,28 +1,43 @@
 ﻿using EmployeePerformance.Dtos;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
+
+
 
 [Route("api/[controller]")]
 [ApiController]
 public class EmployeesController : ControllerBase
 {
-    private readonly IEmployeeRepository _empRepo;
+    
 
-    public EmployeesController(IEmployeeRepository employeeRepository)
+    private readonly IEmployeeRepository _empRepo;
+    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly RoleManager<IdentityRole> _roleManager;
+
+    public EmployeesController(
+        IEmployeeRepository employeeRepository,
+        UserManager<ApplicationUser> userManager,
+        RoleManager<IdentityRole> roleManager)
     {
         _empRepo = employeeRepository;
+        _userManager = userManager;
+        _roleManager = roleManager;
     }
 
 
     [HttpGet]
+    [Authorize(policy: "Admin")]
     public async Task<IActionResult> GetAllEmployees()
     {
         var employees = await _empRepo.GetAllEmployeesAsync();
         return Ok(employees);
     }
 
-
     [HttpGet("{id}")]
+    [Authorize(policy: "AdminOrEmployee")]
     public async Task<IActionResult> GetEmployeeById(int id)
     {
         var employee = await _empRepo.GetEmployeeByIdAsync(id);
@@ -32,19 +47,49 @@ public class EmployeesController : ControllerBase
         return Ok(employee);
     }
 
-
     [HttpPost]
-    public async Task<IActionResult> AddEmployee([FromBody] CreateEmployeeDto employeeDto)
+    [Route("register")]
+    [Authorize(policy: "Admin")] 
+    public async Task<IActionResult> RegisterUser([FromBody] CreateEmployeeDto employeeDto)
     {
         if (employeeDto == null)
             return BadRequest(new { message = "Invalid data" });
 
+       
+        var existingUser = await _userManager.FindByEmailAsync(employeeDto.Email);
+        if (existingUser != null)
+        {
+            return BadRequest(new { message = "Email already exists" });
+        }
+
+        
+        if (employeeDto.Role != "Admin" && employeeDto.Role != "Employee")
+        {
+            return BadRequest(new { message = "Invalid role. Role must be either 'Admin' or 'Employee'." });
+        }
+
+        var newUser = new ApplicationUser
+        {
+            UserName = employeeDto.Email,
+            Email = employeeDto.Email
+        };
+
+        var userResult = await _userManager.CreateAsync(newUser);
+        if (!userResult.Succeeded)
+        {
+            return BadRequest(userResult.Errors);
+        }
+
+      
+        await _userManager.AddToRoleAsync(newUser, employeeDto.Role);
+
         var newEmployee = await _empRepo.AddEmployeeAsync(employeeDto);
+
         return CreatedAtAction(nameof(GetEmployeeById), new { id = newEmployee.EmployeeId }, newEmployee);
     }
 
-
     [HttpPut("{id}")]
+    [Authorize(policy: "Admin")]
     public async Task<IActionResult> UpdateEmployee(int id, [FromBody] UpdateEmployeeDto employeeDto)
     {
         if (employeeDto == null)
@@ -57,8 +102,8 @@ public class EmployeesController : ControllerBase
         return Ok(updatedEmployee);
     }
 
-
     [HttpDelete("{id}")]
+     [Authorize(policy: "Admin")]
     public async Task<IActionResult> DeleteEmployee(int id)
     {
         var result = await _empRepo.DeleteEmployeeAsync(id);
@@ -67,19 +112,12 @@ public class EmployeesController : ControllerBase
 
         return Ok(new { message = "Employee deleted (soft delete applied)" });
     }
+    
 
 
-    //[HttpPut("{id}/increment")]
-    //public async Task<IActionResult> ApplySalaryIncrement(int id)
-    //{
-    //    var result = await _empRepo.ApplySalaryIncrementAsync(id);
-    //    if (!result)
-    //        return BadRequest(new { message = "Salary increment failed (No recent performance review)" });
-
-    //    return Ok(new { message = "Salary increment applied successfully" });
-    //}
-
+    
     [HttpPut("{id}/increment")]
+    [Authorize(policy: "Admin")]
     public async Task<IActionResult> ApplySalaryIncrement(int id)
     {
         var result = await _empRepo.ApplySalaryIncrementAsync(id);
@@ -88,7 +126,11 @@ public class EmployeesController : ControllerBase
 
         return Ok(new { message = "Salary increment applied successfully" });
     }
-
 }
+
+
+
+
+
 
 

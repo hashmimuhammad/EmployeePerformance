@@ -1,16 +1,19 @@
-﻿using EmployeePerformance.Dtos;
+﻿
+using EmployeePerformance.Dtos;
+using EmployeePerformance.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using EmployeePerformance.Dtos;
 
 public interface IEmployeeRepository
 {
-    Task<IEnumerable<EmployeeDto>> GetAllEmployeesAsync(); 
-    Task<EmployeeDto> GetEmployeeByIdAsync(int id);
-    Task<EmployeeDto> AddEmployeeAsync(CreateEmployeeDto employeeDto);
-    Task<EmployeeDto> UpdateEmployeeAsync(int id, UpdateEmployeeDto employeeDto);
-    Task<bool> ApplySalaryIncrementAsync(int employeeId);
+    Task<IEnumerable<Employee>> GetAllEmployeesAsync();
+    Task<Employee> GetEmployeeByIdAsync(int id);
+    Task<Employee> GetEmployeeByEmailAsync(string email);
+    Task<Employee> AddEmployeeAsync(CreateEmployeeDto employeeDto);
+    Task<Employee> UpdateEmployeeAsync(int id, UpdateEmployeeDto employeeDto);
     Task<bool> DeleteEmployeeAsync(int id);
-    
+    Task<bool> ApplySalaryIncrementAsync(int id);
+    public Task<bool> AnyAdminExistsAsync();
+    Task<IEnumerable<PerformanceReview>> GetPerformanceReviewsByEmployeeIdAsync(int employeeId);
 }
 
