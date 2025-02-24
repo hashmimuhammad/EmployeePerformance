@@ -18,7 +18,7 @@ public class TokenService
         var claims = new List<Claim>
         {
             new Claim(ClaimTypes.Name, employee.Email),
-            new Claim(ClaimTypes.Role, employee.Role) // Adding Role as a Claim
+            new Claim(ClaimTypes.Role, employee.Role)
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
