@@ -1,16 +1,21 @@
-﻿using EmployeePerformance.Dtos;
+﻿using EmployeePerformance.Data;
+using EmployeePerformance.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
 
 [Route("api/[controller]")]
 [ApiController]
 public class PerformanceReviewsController : ControllerBase
 {
     private readonly IPerformanceReviewRepository _pReviewRepo;
+    private readonly AppDbContext _dbContext;
 
-    public PerformanceReviewsController(IPerformanceReviewRepository performanceReviewRepository)
+    public PerformanceReviewsController(IPerformanceReviewRepository performanceReviewRepository, AppDbContext dbContext)
     {
         _pReviewRepo = performanceReviewRepository;
+        _dbContext = dbContext;
     }
 
     [HttpGet]
@@ -19,6 +24,8 @@ public class PerformanceReviewsController : ControllerBase
     {
         var reviews = await _pReviewRepo.GetAllReviewsAsync();
         return Ok(reviews);
+
+
     }
 
     [HttpGet("employee/{employeeId}")]
@@ -70,5 +77,12 @@ public class PerformanceReviewsController : ControllerBase
             return NotFound(new { message = "Performance review not found" });
 
         return Ok(new { message = "Performance review deleted successfully" });
+
+
+
     }
+
+
 }
+
+

@@ -1,5 +1,7 @@
 ﻿
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace EmployeePerformance.Dtos
@@ -13,9 +15,9 @@ namespace EmployeePerformance.Dtos
         public string Email { get; set; }
 
         [Required]
-        [MinLength(6, ErrorMessage = "Password must be at least 6 characters long.")]
-        public string Password { get; set; }  
-
+        [MinLength(8, ErrorMessage = "Password must be at least 6 characters long.")]
+        [RegularExpression(@"^(?=.*[!@#$%^&*(),.?':{}|<>]).*$", ErrorMessage = "Password must contain at least one special character.")]
+        public string Password { get; set; }
         [Required]
         [RegularExpression("^(Admin|Employee)$", ErrorMessage = "Role must be either 'Admin' or 'Employee'.")]
         public string Role { get; set; }  
