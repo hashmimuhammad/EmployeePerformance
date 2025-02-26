@@ -1,15 +1,10 @@
-﻿using EmployeePerformance.Data;
+﻿using Dapper;
+using EmployeePerformance.Data;
 using EmployeePerformance.Dtos;
-using EmployeePerformance.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 using System.Data;
-using System.Xml.Linq;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
-using System.Data.SqlClient;
-using Dapper;
 
 
 [Route("api/[controller]")]
