@@ -41,8 +41,6 @@ public class EmployeesController : ControllerBase
             .FromSqlRaw("SELECT * FROM Employees")
             .ToListAsync();
 
-
-
         return Ok(employees);
     }
 
@@ -158,7 +156,7 @@ public class EmployeesController : ControllerBase
             return NotFound(new { message = "Employee not found or inactive" });
 
         var updatedEmployee = await _dbContext.Employees
-            .FromSqlRaw("SELECT * FROM Employees WHERE EmployeeId = @id", new SqlParameter("@id", id))
+            .FromSqlRaw("SELECT * FROM Employees WHERE EmployeeId ={0}", id)
             .FirstOrDefaultAsync();
 
         return Ok(updatedEmployee);
@@ -171,19 +169,14 @@ public class EmployeesController : ControllerBase
     {
         //var result = await _empRepo.DeleteEmployeeAsync(id);
         var result = await _dbContext.Database.ExecuteSqlRawAsync(
-            "DELETE FROM Employees WHERE EmployeeId = @id",
-            new SqlParameter("@id", id)
-);
-
+            "DELETE FROM Employees WHERE EmployeeId = {0}", id);
+            
         if (result == 0)
             return NotFound(new { message = "Employee not found" });
 
         return Ok(new { message = "Employee deleted (soft delete applied)" });
     }
-    
-
-
-    
+       
     [HttpPut("{id}/increment")]
     [Authorize(policy: "Admin")]
     public async Task<IActionResult> ApplySalaryIncrement(int id)

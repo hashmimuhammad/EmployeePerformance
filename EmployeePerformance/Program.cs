@@ -5,12 +5,17 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using Microsoft.Data.SqlClient;
+using System.Data;
+using Dapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add Database Connection
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddScoped<IDbConnection>(sp =>
+    new SqlConnection(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Add Identity Services
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
