@@ -56,7 +56,7 @@ public class EmployeesController : ControllerBase
 
 
     [HttpGet("{email}")]
-    [Authorize(Roles = "Employee,Admin")]
+    [Authorize(policy: "AdminOrEmployee")]
     public async Task<IActionResult> GetEmployeeByEmail(string email)
     {
 

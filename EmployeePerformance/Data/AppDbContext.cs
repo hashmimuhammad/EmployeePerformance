@@ -13,6 +13,8 @@ namespace EmployeePerformance.Data
 
         public DbSet<Employee> Employees { get; set; }
         public DbSet<PerformanceReview> PerformanceReviews { get; set; }
+        public DbSet<LeaveRequest> LeaveRequests { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

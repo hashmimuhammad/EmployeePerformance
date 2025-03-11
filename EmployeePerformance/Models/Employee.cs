@@ -6,10 +6,13 @@ namespace EmployeePerformance.Models
     public class Employee
     {
         [Key]
+
         public int EmployeeId { get; set; }
 
         [Required]
         public string FullName { get; set; }
+
+
         [Required, EmailAddress]
         public string Email { get; set; }
         public DateTime DateOfBirth { get; set; }

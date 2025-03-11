@@ -4,10 +4,7 @@ using EmployeePerformance.Data;
 using EmployeePerformance.Dtos;
 using EmployeePerformance.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 
 public class EmployeeRepository : IEmployeeRepository
 {
@@ -24,13 +21,11 @@ public class EmployeeRepository : IEmployeeRepository
         return await _context.Employees.Where(e => e.IsActive).ToListAsync();
     }
 
-
     public async Task<Employee> GetEmployeeByIdAsync(int id)
     {
         return await _context.Employees.FirstOrDefaultAsync(e => e.EmployeeId == id && e.IsActive);
     }
 
-    
     public async Task<Employee> GetEmployeeByEmailAsync(string email)
     {
         return await _context.Employees.FirstOrDefaultAsync(e => e.Email == email && e.IsActive);
@@ -70,8 +65,6 @@ public class EmployeeRepository : IEmployeeRepository
         await _context.SaveChangesAsync();
         return employee;
     }
-
-  
     public async Task<bool> DeleteEmployeeAsync(int id)
     {
         var employee = await _context.Employees.FirstOrDefaultAsync(e => e.EmployeeId == id && e.IsActive);
@@ -82,8 +75,6 @@ public class EmployeeRepository : IEmployeeRepository
         await _context.SaveChangesAsync();
         return true;
     }
-
-    
     public async Task<bool> ApplySalaryIncrementAsync(int id)
     {
         var employee = await _context.Employees.FirstOrDefaultAsync(e => e.EmployeeId == id && e.IsActive);
@@ -116,8 +107,6 @@ public class EmployeeRepository : IEmployeeRepository
         await _context.SaveChangesAsync();
         return true;
     }
-
-   
     public async Task<IEnumerable<PerformanceReview>> GetPerformanceReviewsByEmployeeIdAsync(int employeeId)
     {
         return await _context.PerformanceReviews

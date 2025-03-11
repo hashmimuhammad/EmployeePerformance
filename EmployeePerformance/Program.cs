@@ -8,6 +8,9 @@ using System.Text;
 using Microsoft.Data.SqlClient;
 using System.Data;
 using Dapper;
+using EmployeePerformance.Services;
+using EmployeePerformance.Interfaces;
+using EmployeePerformance.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -56,6 +59,8 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<IPerformanceReviewRepository, PerformanceReviewRepository>();
 builder.Services.AddScoped<ITokenService, TokenServiceRepository>();
+builder.Services.AddScoped<ILeaveRepository, LeaveRepository>();
+builder.Services.AddScoped<LeaveRequestService>();
 
 
 

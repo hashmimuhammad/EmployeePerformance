@@ -4,6 +4,7 @@ using EmployeePerformance.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EmployeePerformance.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250306174603_RemoveLastNameFromEmployee")]
+    partial class RemoveLastNameFromEmployee
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -165,46 +168,6 @@ namespace EmployeePerformance.Migrations
                     b.ToTable("PerformanceReviews");
                 });
 
-            modelBuilder.Entity("LeaveRequest", b =>
-                {
-                    b.Property<int>("LeaveId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LeaveId"));
-
-                    b.Property<int>("EmployeeId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("LeaveType")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Reason")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("RequestDone")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("StartgDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.HasKey("LeaveId");
-
-                    b.HasIndex("EmployeeId");
-
-                    b.ToTable("LeaveRequests");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -342,17 +305,6 @@ namespace EmployeePerformance.Migrations
                 {
                     b.HasOne("EmployeePerformance.Models.Employee", "Employee")
                         .WithMany("PerformanceReviews")
-                        .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Employee");
-                });
-
-            modelBuilder.Entity("LeaveRequest", b =>
-                {
-                    b.HasOne("EmployeePerformance.Models.Employee", "Employee")
-                        .WithMany()
                         .HasForeignKey("EmployeeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
