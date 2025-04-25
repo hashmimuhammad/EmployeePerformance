@@ -16,6 +16,7 @@ namespace EmployeePerformance.Models
         [Required, EmailAddress]
         public string Email { get; set; }
         public DateTime DateOfBirth { get; set; }
+        
         public string Department { get; set; }
         [Required]
         public string PasswordHash { get; set; } 

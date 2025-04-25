@@ -2,6 +2,7 @@
 
 using EmployeePerformance.Data;
 using EmployeePerformance.Dtos;
+using EmployeePerformance.Migrations;
 using EmployeePerformance.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,11 +16,13 @@ public class EmployeeRepository : IEmployeeRepository
         _context = context;
     }
 
-    
+
     public async Task<IEnumerable<Employee>> GetAllEmployeesAsync()
     {
+        //var employee = _context.Employees.Find(1);  // Lazy loading
+
         return await _context.Employees.Where(e => e.IsActive).ToListAsync();
-    }
+    }   
 
     public async Task<Employee> GetEmployeeByIdAsync(int id)
     {
@@ -116,6 +119,43 @@ public class EmployeeRepository : IEmployeeRepository
     public async Task<bool> AnyAdminExistsAsync()
     {
         return await _context.Employees.AnyAsync(e => e.Role == "Admin" && e.IsActive);
+    }
+
+
+    public async Task<IEnumerable<Object>> GetEmployeeWithReview()
+    {
+        var result = await(
+            from e in _context.Employees
+            join r in _context.PerformanceReviews on e.EmployeeId equals r.EmployeeId
+            
+
+            select new
+               {
+                   e.FullName,
+                   e.Email,
+                   e.Department,
+                   e.CurrentSalary,
+                   r.PerfomanceScore,
+                   r.Comments
+                  }).ToListAsync();
+        return result;
+
+    }
+
+    public async  Task<object> GetEmployeeWithLeaveRequest()
+    {
+        var result = await (from e in _context.Employees
+                            join l in _context.LeaveRequests on e.EmployeeId equals l.EmployeeId
+                            select new
+                            {
+                                e.FullName,
+                                e.Email,
+                                l.LeaveType,
+                                l.StartgDate,
+                                l.EndDate,
+                                l.Reason
+                            }).ToListAsync();
+        return result;
     }
 }
 

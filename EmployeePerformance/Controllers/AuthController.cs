@@ -11,39 +11,41 @@ public class AuthController : ControllerBase
 {
     private readonly ITokenService _tokenService;
     private readonly UserManager<ApplicationUser> _userManager;
-    private readonly AppDbContext _dbContext;
+   
 
-
-    public AuthController(ITokenService tokenService, UserManager<ApplicationUser> userManager, AppDbContext dbContext )
+    public AuthController(ITokenService tokenService, UserManager<ApplicationUser> userManager )
     {
         _tokenService = tokenService;
         _userManager = userManager;
-        _dbContext = dbContext;
-
     }
 
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
     {
-        //var user = await _userManager.FindByEmailAsync(loginDto.Email);
-
-
-         var user = await _dbContext.Set<ApplicationUser>()
-            .FromSqlRaw("SELECT * FROM AspNetUsers WHERE Email = {0}", loginDto.Email)
-            
-            .FirstOrDefaultAsync();
-        if (user == null || !await _userManager.CheckPasswordAsync(user, loginDto.Password))
+        try
         {
-            var roles = await _userManager.GetRolesAsync(user);
-            var token = _tokenService.GenerateJwtToken(user, roles);
-            return Ok(new { token });
-        }
-        else
-        {
-            return Unauthorized(new { message = "Invalid email or password" });
-        }
+            var user = await _userManager.FindByEmailAsync(loginDto.Email);
+            var passowrd = await _userManager.CheckPasswordAsync(user,loginDto.Password);
 
+            if (user == null || passowrd == null)
+            {
+                return Unauthorized(new { message = "Invalid email or password" });
+            }
+            else
+            {
+
+                var roles = await _userManager.GetRolesAsync(user);
+                var token = _tokenService.GenerateJwtToken(user, roles);
+                return Ok(new { token });
+            }
+        }
+        catch (Exception ex)
+        {
+           
+            return StatusCode(500, new { message = "unexpected error occurred.", error = ex.Message });
+        }
     }
+
 
 
 }

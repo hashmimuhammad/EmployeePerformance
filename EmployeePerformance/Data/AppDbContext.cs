@@ -18,20 +18,19 @@ namespace EmployeePerformance.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder); // 👈 Call base method for Identity tables
+            base.OnModelCreating(modelBuilder); 
 
-            // Unique Email Constraint for Employees
+          
             modelBuilder.Entity<Employee>()
                 .HasIndex(e => e.Email)
                 .IsUnique();
 
-            // Employee - PerformanceReview (One-to-Many)
             modelBuilder.Entity<Employee>()
                 .HasMany(e => e.PerformanceReviews)
                 .WithOne(p => p.Employee)
                 .HasForeignKey(p => p.EmployeeId);
 
-            // Ensure PerformanceScore default value
+            
             modelBuilder.Entity<PerformanceReview>()
                 .Property(p => p.PerfomanceScore)
                 .HasDefaultValue(1);

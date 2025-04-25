@@ -15,5 +15,7 @@ public interface IEmployeeRepository
     Task<bool> ApplySalaryIncrementAsync(int id);
     public Task<bool> AnyAdminExistsAsync();
     Task<IEnumerable<PerformanceReview>> GetPerformanceReviewsByEmployeeIdAsync(int employeeId);
+    Task<IEnumerable<Object>> GetEmployeeWithReview();
+    Task<Object> GetEmployeeWithLeaveRequest();
 }
 

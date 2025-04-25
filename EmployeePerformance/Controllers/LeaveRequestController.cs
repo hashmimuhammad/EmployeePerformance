@@ -31,21 +31,31 @@ namespace EmployeePerformance.Controllers
         [Authorize(policy: "Employee")]
         public async Task<IActionResult> RequestLeave([FromBody] CreateLeaveRequestDto leaveRequestDto)
         {
-            if (leaveRequestDto == null)
+            try
             {
-                return BadRequest("Invalid Request");
-            }
+                if (leaveRequestDto == null)
+                {
+                    return BadRequest(new { message = "Invalid request data" });
+                }
 
-            var leaveRequest = new LeaveRequest
+                var leaveRequest = new LeaveRequest
+                {
+                    EmployeeId = leaveRequestDto.EmployeeId,
+                    LeaveType = leaveRequestDto.LeaveType,
+                    StartgDate = leaveRequestDto.StartDate, 
+                    EndDate = leaveRequestDto.EndDate,
+                    Reason = leaveRequestDto.Reason
+                };
+
+                await _leaveRepo.AddAsync(leaveRequest);
+
+                return Ok(new { message = "Leave request submitted successfully" });
+            }
+            catch (Exception ex)
             {
-                EmployeeId = leaveRequestDto.EmployeeId,
-                LeaveType = leaveRequestDto.LeaveType,
-                StartgDate = leaveRequestDto.StartDate,
-                EndDate = leaveRequestDto.EndDate,
-                Reason = leaveRequestDto.Reason
-            };
-            await _leaveRepo.AddAsync(leaveRequest);
-            return Ok("Leave request submitted successfully");
+                
+                return StatusCode(500, new { message = "unexpected error occurred while submitting the leave request.", error = ex.Message });
+            }
         }
         [HttpGet("all")]
         [Authorize(policy: "Admin")]
@@ -59,34 +69,45 @@ namespace EmployeePerformance.Controllers
         [Authorize(policy: "Admin")]
         public async Task<IActionResult> GetByIdAsync(int leaveId)
         {
-            var result = await _leaveRepo.GetByIdAsync(leaveId);
-
-            if(result == null)
+            try
             {
-                return NotFound("Id not found");
+                var result = await _leaveRepo.GetByIdAsync(leaveId);
+
+                if (result == null)
+                {
+                    return NotFound(new { message = "Leave request not found" });
+                }
+
+                return Ok(result);
             }
-            return Ok(result);
-         
-            
+            catch (Exception ex)
+            {
+                
+                return StatusCode(500, new { message = "unexpected error occurred while retrieving the leave request.", error = ex.Message });
+            }
         }
 
         [HttpDelete]
         [Authorize(policy: "Admin")]
         public async Task<IActionResult> DeleteAsync(int id)
         {
-            var result = await _leaveRepo.DeleteAsync(id);
-
-            if(!result)
+            try
             {
-                return NotFound("Id not found");
+                var result = await _leaveRepo.DeleteAsync(id);
 
+                if (!result)
+                {
+                    return NotFound(new { message = "Leave request not found" });
+                }
+
+                return Ok(new { message = "Leave request deleted successfully" });
             }
-            return Ok("Deleted successfully");
+            catch (Exception ex)
+            {
+                
+                return StatusCode(500, new { message = "unexpected error occurred while deleting the leave request.", error = ex.Message });
+            }
         }
-
-
-
-
 
     }
 }
