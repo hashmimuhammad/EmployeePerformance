@@ -3,9 +3,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-
-
-
 [Route("api/[controller]")]
 [ApiController]
 public class EmployeesController : ControllerBase
@@ -63,12 +60,27 @@ public class EmployeesController : ControllerBase
     [HttpGet("EmployeeWithLeaveRequest")]
     //[Authorize(policy:"Admin")]
 
-    public async Task<IActionResult> GetEmployeeWithLeaveRequeste()
+    public async Task<IActionResult> GetEmployeeWithLeaveRequest()
     {
         try
         {
             var employee = await _empRepo.GetEmployeeWithLeaveRequest();
             return Ok(employee);
+        }
+        catch (Exception e)
+        {
+            return StatusCode(500, e.Message);
+        }
+    }
+
+    [HttpGet("FullDetails")]
+
+    public async Task<IActionResult> GetEmployeeFullDetails()
+    {
+        try
+        {
+            var employees = await _empRepo.GetEmployeeWithReviewAndRequest();
+            return Ok(employees);
         }
         catch (Exception e)
         {

@@ -72,7 +72,10 @@ public class PerformanceReviewRepository : IPerformanceReviewRepository
     public async Task<PerformanceReviewDto> UpdateReviewAsync(int reviewId, UpdatePerformanceReviewDto reviewDto)
     {
         var review = await _context.PerformanceReviews.FindAsync(reviewId);
-        if (review == null) return null;
+        if (review == null)
+        {
+            return null;
+        }
 
         review.PerfomanceScore = reviewDto.PerfomanceScore ?? review.PerfomanceScore;
         review.Comments = reviewDto.Comments ?? review.Comments;

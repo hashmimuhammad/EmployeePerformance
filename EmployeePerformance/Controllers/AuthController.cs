@@ -25,9 +25,9 @@ public class AuthController : ControllerBase
         try
         {
             var user = await _userManager.FindByEmailAsync(loginDto.Email);
-            var passowrd = await _userManager.CheckPasswordAsync(user,loginDto.Password);
+            var password = await _userManager.CheckPasswordAsync(user,loginDto.Password);
 
-            if (user == null || passowrd == null)
+            if (user == null || password == null)
             {
                 return Unauthorized(new { message = "Invalid email or password" });
             }

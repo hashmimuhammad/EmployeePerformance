@@ -17,5 +17,6 @@ public interface IEmployeeRepository
     Task<IEnumerable<PerformanceReview>> GetPerformanceReviewsByEmployeeIdAsync(int employeeId);
     Task<IEnumerable<Object>> GetEmployeeWithReview();
     Task<Object> GetEmployeeWithLeaveRequest();
+    Task<Object> GetEmployeeWithReviewAndRequest();
 }
 

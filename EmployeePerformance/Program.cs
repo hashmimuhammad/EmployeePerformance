@@ -7,7 +7,6 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using Microsoft.Data.SqlClient;
 using System.Data;
-using Dapper;
 using EmployeePerformance.Services;
 using EmployeePerformance.Interfaces;
 using EmployeePerformance.Repository;
@@ -67,6 +66,7 @@ builder.Services.AddSwaggerGen(c =>
                 }
             });
 });
+
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<IPerformanceReviewRepository, PerformanceReviewRepository>();
 builder.Services.AddScoped<ITokenService, TokenServiceRepository>();
